@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="admincss.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-panel">
+        <header class="admin-header">
+            <h2 class="logo">Admin Panel</h2>
+        </header>
+
+        <section class="user-management">
+            <h3>Registered Users</h3>
+            <table id="userTable">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- User rows will be dynamically generated here -->
+                </tbody>
+            </table>
+        </section>
+
+        <div id="editUserForm" class="edit-user-form">
+            <h3>Edit User</h3>
+            <form id="editForm">
+                <label>
+                    Username:
+                    <input type="text" id="editUsername" required>
+                </label>
+                <label>
+                    Email:
+                    <input type="email" id="editEmail" required>
+                </label>
+                <label>
+                    Password:
+                    <input type="password" id="editPassword" required>
+                </label>
+                <div class="form-actions">
+                    <button type="submit">Update</button>
+                    <button type="button" id="cancelEdit" class="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, onValue, remove, update, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // New Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEZCJwzuLiOAsW6S8Sm24T2gZCV4t66RA", 
+            authDomain: "loginpage-98037.firebaseapp.com",
+            projectId: "loginpage-98037",
+            storageBucket: "loginpage-98037.firebasestorage.app",
+            messagingSenderId: "217311182261",
+            appId: "1:217311182261:web:81bc707dd72c639e98adfc"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let currentUsername = null;
+
+        // Load Users
+        function loadUsers() {
+            const usersRef = ref(db, 'users/');
+            onValue(usersRef, (snapshot) => {
+                const users = snapshot.val();
+                const userTableBody = document.getElementById("userTableBody");
+                userTableBody.innerHTML = '';
+
+                if (users) {
+                    for (const key in users) {
+                        const user = users[key];
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${user.username}</td>
+                            <td>${user.email}</td>
+                            <td>${user.password}</td>
+                            <td>
+                                <button class="edit-button" data-username="${key}">Edit</button>
+                                <button class="delete-button" data-username="${key}">Delete</button>
+                            </td>
+                        `;
+                        userTableBody.appendChild(row);
+                    }
+                } else {
+                    userTableBody.innerHTML = "<tr><td colspan='4'>No users found</td></tr>";
+                }
+            });
+        }
+
+        // Handle Edit Button Click
+        document.getElementById("userTableBody").addEventListener("click", (e) => {
+            if (e.target.classList.contains("edit-button")) {
+                const username = e.target.getAttribute("data-username");
+                openEditForm(username);
+            }
+        });
+
+        // Handle Delete Button Click
+        document.getElementById("userTableBody").addEventListener("click", async (e) => {
+            if (e.target.classList.contains("delete-button")) {
+                const username = e.target.getAttribute("data-username");
+                try {
+                    await remove(ref(db, 'users/' + username));
+                    alert("User deleted successfully!");
+                    loadUsers(); // Reload the users table
+                } catch (error) {
+                    console.error("Error deleting user:", error);
+                    alert("Error deleting user.");
+                }
+            }
+        });
+
+        // Open Edit Form
+        function openEditForm(username) {
+            const userRef = ref(db, 'users/' + username);
+            onValue(userRef, (snapshot) => {
+                if (snapshot.exists()) {
+                    const user = snapshot.val();
+
+                    currentUsername = user.username; 
+                    document.getElementById("editUsername").value = user.username;
+                    document.getElementById("editEmail").value = user.email;
+                    document.getElementById("editPassword").value = user.password;
+
+                    document.getElementById("editUserForm").style.display = "block";
+                }
+            }, { onlyOnce: true });
+        }
+
+        // Handle Edit Form Submit
+        document.getElementById("editForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const newUsername = document.getElementById("editUsername").value;
+            const email = document.getElementById("editEmail").value;
+            const password = document.getElementById("editPassword").value;
+
+            try {
+                if (newUsername !== currentUsername) {
+                    await remove(ref(db, 'users/' + currentUsername));
+                    await set(ref(db, 'users/' + newUsername), {
+                        username: newUsername,
+                        email,
+                        password
+                    });
+                } else {
+                    await update(ref(db, 'users/' + currentUsername), {
+                        email,
+                        password
+                    });
+                }
+
+                alert("User information updated successfully!");
+                document.getElementById("editUserForm").style.display = "none";
+                loadUsers(); 
+            } catch (error) {
+                console.error("Error updating user:", error);
+                alert("Error updating user information.");
+            }
+        });
+
+        // Handle Cancel Edit
+        document.getElementById("cancelEdit").addEventListener("click", () => {
+            document.getElementById("editUserForm").style.display = "none";
+        });
+
+        // Load users on page load
+        loadUsers();
+    </script>
+</body>
+</html>

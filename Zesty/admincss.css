@@ -1,0 +1,173 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #F5F5F5; /* Light Gray */
+    color: #333; /* Dark Text */
+    margin: 0;
+    padding: 0;
+}
+
+.admin-panel {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #FFF;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.logo {
+    text-align: center;
+    color: #FF5722; /* Orange */
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* User Management */
+.user-management {
+    margin-bottom: 30px;
+}
+
+.user-management h3 {
+    color: #388E3C; /* Dark Green */
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #FF5722; /* Orange */
+    color: white;
+}
+
+td {
+    background-color: #FFF;
+}
+
+button {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+/* Edit Form */
+#editUserForm {
+    background-color: #FFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#editUserForm h3 {
+    font-size: 20px;
+    color: #FF5722; /* Orange */
+    margin-bottom: 20px;
+}
+
+#editUserForm label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#editUserForm input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+#editUserForm input:focus {
+    border-color: #FF5722; /* Orange */
+}
+
+#editUserForm button {
+    background-color: #FFC107; /* Yellow */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+#editUserForm button:hover {
+    background-color: #FF9800; /* Darker Yellow */
+}
+
+#editUserForm #cancelEdit {
+    background-color: #795548; /* Brown */
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+
+#editUserForm #cancelEdit:hover {
+    background-color: #6D4C41; /* Darker Brown */
+}
+
+/* Footer */
+footer {
+    background-color: #795548; /* Brown */
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .admin-panel {
+        padding: 20px;
+    }
+
+    .user-management h3 {
+        font-size: 20px;
+    }
+
+    .logo {
+        font-size: 28px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    button {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    #editUserForm input {
+        font-size: 14px;
+    }
+
+    #editUserForm button {
+        font-size: 14px;
+        padding: 10px 15px;
+    }
+}

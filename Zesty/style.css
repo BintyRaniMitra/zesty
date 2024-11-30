@@ -1,0 +1,126 @@
+/* Universal Styles */
+* {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url(bg.jpg); /* Add the background image */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; /* Center the background image */
+  color: #333;
+}
+
+.box {
+  width: 350px;
+  padding: 40px 30px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 36px;
+  color: #FF6347; /* Use a vibrant color for the logo */
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 30px;
+  font-weight: normal;
+}
+
+.form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputbox {
+  position: relative;
+}
+
+.inputbox input {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  background: #f3f3f3;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: #333;
+  transition: border-color 0.3s;
+}
+
+.inputbox input:focus {
+  border-color: #FF6347;
+  outline: none;
+}
+
+.inputbox span {
+  position: absolute;
+  top: -18px;
+  left: 10px;
+  font-size: 12px;
+  color: #555;
+  background: #fff;
+  padding: 0 5px;
+}
+
+/* Button Styles */
+.sub {
+  padding: 12px;
+  background: #FF6347;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.sub:hover {
+  background: #ff7a5a;
+}
+
+/* Toggle Button Styles */
+.toggle-button {
+    margin-top: 20px;
+    background: #FF6347; /* Vibrant background color */
+    color: #fff; /* Text color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for spacing */
+    font-size: 14px; /* Font size */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    text-decoration: none; /* No underline */
+}
+
+/* Hover and active effects */
+.toggle-button:hover {
+    background: #ff7a5a; /* Lighter shade on hover */
+    transform: scale(1.05); /* Slightly enlarge */
+}
+
+.toggle-button:active {
+    transform: scale(0.95); /* Slightly shrink on click */
+}
+
+/* Additional styles for focus */
+.toggle-button:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.5); /* Custom focus ring */
+}

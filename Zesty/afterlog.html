@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<head>
+    <title>User Profile - Foodie App</title>
+    <style>
+        /* General Reset */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+        }
+
+        body {
+          font-family: 'Arial', sans-serif;
+          background-color: #f5f5f5;
+          color: #333;
+        }
+
+        header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #FF6F61; /* Food-related color */
+          padding: 20px;
+          color: white;
+        }
+
+        header .logo img {
+          height: 50px;
+          width: auto;
+        }
+
+        /* Adjust the welcome message to be smaller and more professional */
+        header .welcome-message {
+          display: flex;
+          align-items: center;
+          font-size: 18px;
+        }
+
+        header .welcome-message h1 {
+          margin-right: 10px;
+          font-size: 18px; /* Make the text smaller */
+        }
+
+        header .welcome-message span {
+          font-weight: bold;
+        }
+
+        header .welcome-message .user-icon {
+          width: 24px;
+          height: 24px;
+          margin-right: 5px;
+        }
+
+        /* Box to contain the profile */
+        .box {
+          width: 80%;
+          max-width: 900px;
+          margin: 40px auto;
+          background-color: white;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .box .form {
+          margin-top: 20px;
+        }
+
+        .box .form .subtitle {
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+          padding: 12px 15px;
+          border: 1px solid #ddd;
+          text-align: left;
+        }
+
+        table th {
+          background-color: #FF6F61; /* Same as header color */
+          color: white;
+          width: 150px;
+        }
+
+        table td {
+          background-color: #f9f9f9;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+          width: 100%;
+          padding: 10px;
+          margin-top: 5px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+        }
+
+        button {
+          padding: 10px 20px;
+          border: none;
+          border-radius: 5px;
+          background-color: #FF6F61;
+          color: white;
+          font-size: 16px;
+          cursor: pointer;
+          margin-right: 10px;
+          transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+          background-color: #ff3b2a;
+        }
+
+        button:disabled {
+          background-color: #ddd;
+          cursor: not-allowed;
+        }
+
+        .toggle-button {
+          margin-top: 10px;
+        }
+
+        /* Small screen responsiveness */
+        @media (max-width: 768px) {
+          .box {
+            width: 95%;
+            padding: 15px;
+          }
+
+          header {
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: center;
+          }
+
+          header .logo img {
+            height: 40px;
+          }
+
+          header .welcome-message h1 {
+            font-size: 16px; /* Adjust for smaller screens */
+          }
+
+          table th, table td {
+            padding: 10px;
+          }
+
+          button {
+            width: 100%;
+            margin-top: 10px;
+          }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="Capture.PNG" alt="Foodie Logo">
+        </div>
+        <div class="welcome-message">
+            <img src="user.png" alt="User Icon" class="user-icon"> <!-- User Icon -->
+            <h1>Welcome, <span id="userNameDisplay"></span>!</h1>
+        </div>
+    </header>
+
+    <div class="box">
+        <div class="form">
+            <p class="subtitle">Your Profile</p>
+
+            <!-- User Info Table -->
+            <table id="userInfoTable">
+                <tr>
+                    <th>Username</th>
+                    <td id="usernameCell"></td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td id="emailCell"></td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td id="passwordCell"></td>
+                </tr>
+            </table>
+
+            <!-- Edit and Save buttons -->
+            <button id="editButton" class="toggle-button">Edit</button>
+            <button id="saveButton" class="toggle-button" style="display:none;">Save Changes</button>
+
+            <!-- Logout Button -->
+            <button id="logoutButton" class="toggle-button">Logout</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getDatabase, ref, set, get, remove } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+
+        // Updated Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEZCJwzuLiOAsW6S8Sm24T2gZCV4t66RA",
+            authDomain: "loginpage-98037.firebaseapp.com",
+            projectId: "loginpage-98037",
+            storageBucket: "loginpage-98037.firebasestorage.app",
+            messagingSenderId: "217311182261",
+            appId: "1:217311182261:web:81bc707dd72c639e98adfc"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Load user data from localStorage
+        const username = localStorage.getItem("username");
+        const email = localStorage.getItem("email");
+        const password = localStorage.getItem("password");
+
+        // Display the username in the welcome message
+        document.getElementById("userNameDisplay").textContent = username;
+
+        // Populate the table with user data
+        document.getElementById("usernameCell").textContent = username;
+        document.getElementById("emailCell").textContent = email;
+        document.getElementById("passwordCell").textContent = password;
+
+        // Edit button functionality
+        document.getElementById("editButton").addEventListener("click", () => {
+            // Enable editing of user data
+            document.getElementById("usernameCell").innerHTML = `<input type="text" id="editUsername" value="${username}">`;
+            document.getElementById("emailCell").innerHTML = `<input type="email" id="editEmail" value="${email}">`;
+            document.getElementById("passwordCell").innerHTML = `<input type="password" id="editPassword" value="${password}">`;
+
+            // Toggle visibility of buttons
+            document.getElementById("editButton").style.display = "none";
+            document.getElementById("saveButton").style.display = "inline-block";
+        });
+
+        // Save changes functionality
+        document.getElementById("saveButton").addEventListener("click", async () => {
+            const newUsername = document.getElementById("editUsername").value;
+            const newEmail = document.getElementById("editEmail").value;
+            const newPassword = document.getElementById("editPassword").value;
+
+            // Delete old user data from Firebase using the old username
+            await remove(ref(db, 'users/' + username));
+
+            // Add new user data with the new username
+            await set(ref(db, 'users/' + newUsername), {
+                username: newUsername,
+                email: newEmail,
+                password: newPassword
+            });
+
+            // Update localStorage with new information
+            localStorage.setItem("username", newUsername);
+            localStorage.setItem("email", newEmail);
+            localStorage.setItem("password", newPassword);
+
+            // Update the table with the new values
+            document.getElementById("usernameCell").textContent = newUsername;
+            document.getElementById("emailCell").textContent = newEmail;
+            document.getElementById("passwordCell").textContent = newPassword;
+
+            // Toggle visibility of buttons
+            document.getElementById("editButton").style.display = "inline-block";
+            document.getElementById("saveButton").style.display = "none";
+
+            alert("Profile updated successfully!");
+        });
+
+        // Logout functionality
+        document.getElementById("logoutButton").addEventListener("click", () => {
+            // Clear localStorage and redirect to login page
+            localStorage.removeItem("username");
+            localStorage.removeItem("email");
+            localStorage.removeItem("password");
+            window.location.href = "index.html"; // Redirect to the login/registration page
+        });
+    </script>
+</body>
+</html>

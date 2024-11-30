@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<head>
+    <title>Firebase Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="box">
+        <div class="form">
+            <h2 class="logo">Zesty</h2>
+            <p class="subtitle" id="formType">Registration Form</p> <!-- Dynamic subtitle -->
+
+            <form id="userForm">
+                <div class="inputbox"> 
+                    <input type="text" id="username" required>
+                    <span>Username</span>
+                </div>
+                <div class="inputbox" id="emailBox">
+                    <input type="email" id="email" required>
+                    <span>E-mail</span>
+                </div>
+                <div class="inputbox">
+                    <input type="password" id="password" required>
+                    <span>Password</span>
+                </div>
+                <input type="submit" value="Register" class="sub" id="submit">
+            </form>
+
+            <button id="toggleForm" class="toggle-button">Switch </button> <!-- Toggle form type -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // New Firebase configuration here
+        const firebaseConfig = {
+            apiKey: "AIzaSyDEZCJwzuLiOAsW6S8Sm24T2gZCV4t66RA", 
+            authDomain: "loginpage-98037.firebaseapp.com",
+            projectId: "loginpage-98037",
+            storageBucket: "loginpage-98037.firebasestorage.app",
+            messagingSenderId: "217311182261",
+            appId: "1:217311182261:web:81bc707dd72c639e98adfc"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Track form mode: true for register, false for login
+        let isRegisterMode = true;
+
+        document.getElementById("toggleForm").addEventListener("click", () => {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById("formType").textContent = isRegisterMode ? "Registration Form" : "Login Form";
+            document.getElementById("submit").value = isRegisterMode ? "Register" : "Login";
+
+            // Show/hide email input based on mode
+            document.getElementById("emailBox").style.display = isRegisterMode ? "block" : "none"; // Show email in register mode
+        });
+
+        document.getElementById("submit").addEventListener("click", async function (e) {
+            e.preventDefault();
+            const username = document.getElementById("username").value;
+            const email = document.getElementById("email").value; // Email only used during registration
+            const password = document.getElementById("password").value;
+
+            if (isRegisterMode) {
+                // Registration logic
+                await set(ref(db, 'users/' + username), {
+                    username,
+                    email,
+                    password // Store the password in the database (note: this is not secure for production)
+                });
+                alert("Registration Successful!");
+            } else {
+                // Login logic
+                const userRef = ref(db, 'users/' + username);
+                get(userRef).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        if (data.password === password) { // Check against password
+                            alert("Login Successful!");
+
+                            // Save user data to localStorage
+                            localStorage.setItem("username", data.username);
+                            localStorage.setItem("email", data.email);
+                            localStorage.setItem("password", data.password);
+
+                            // Redirect to afterlog.html
+                            window.location.href = "afterlog.html";
+                        } else {
+                            alert("Login failed: Incorrect password.");
+                        }
+                    } else {
+                        alert("User not found.");
+                    }
+                }).catch((error) => {
+                    console.error("Error fetching user data:", error);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
